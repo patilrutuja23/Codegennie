@@ -1,0 +1,5 @@
+{
+  "name": "CodeBoost Web",
+  "description": "A web-based AI assistant to help you explain, refactor, document, and analyze your code using the power of Gemini. Just paste your code, choose an action, and get instant feedback.",
+  "requestFramePermissions": []
+}
