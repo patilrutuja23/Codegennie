@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Auth from './components/Auth';
@@ -9,7 +9,6 @@ import { generateCodeFromComment } from './services/ollamaService';
 import { ACTIONS, DEFAULT_CODES } from './constants';
 import type { Action, Bug, TestResult, Language } from './types';
 
-// Using a simplified type for Monaco markers to avoid full dependency
 type EditorMarker = {
   startLineNumber: number;
   startColumn: number;
@@ -37,12 +36,29 @@ const App: React.FC = () => {
   const [bugReports, setBugReports] = useState<Bug[]>([]);
   const liveAnalysisTimeoutRef = useRef<number | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const storedTheme = localStorage.getItem('theme');
+    return (storedTheme === 'light' || storedTheme === 'dark') ? storedTheme : 'dark';
+  });
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
 
   const mapSeverityToMonaco = (severity: Bug['severity']): number => {
     switch (severity) {
-      case 'error': return 8; // monaco.MarkerSeverity.Error
-      case 'warning': return 4; // monaco.MarkerSeverity.Warning
-      case 'info': return 2; // monaco.MarkerSeverity.Info
+      case 'error': return 8; 
+      case 'warning': return 4; 
+      case 'info': return 2;
       default: return 2;
     }
   };
@@ -58,11 +74,10 @@ const App: React.FC = () => {
   const handleLanguageChange = (newLanguage: Language) => {
     setLanguage(newLanguage);
     setCode(DEFAULT_CODES[newLanguage]);
-    // Reset state for the new language context
     setMarkers([]);
     setBugReports([]);
     setAiOutput('');
-    setCodeOutput('Click "Run" to see the output here.');
+    setCodeOutput('Click "Run Code" to see the output here.');
     setError(null);
     setTestCode(null);
     setTestResults([]);
@@ -93,7 +108,6 @@ const App: React.FC = () => {
         processBugResults(bugs);
       } catch (e) {
         console.error("Live analysis failed:", e);
-        // Silently fail to not disrupt user experience
       } finally {
         setIsAnalyzingLive(false);
       }
@@ -107,7 +121,7 @@ const App: React.FC = () => {
     }
     liveAnalysisTimeoutRef.current = window.setTimeout(() => {
         runLiveBugAnalysis(newCode, language);
-    }, 1500); // 1.5 second debounce
+    }, 1500); 
   };
 
   const handleActionTrigger = useCallback(async (actionId: Action['id']) => {
@@ -131,7 +145,7 @@ const App: React.FC = () => {
         if (bugs.length === 0) {
           setAiOutput("No bugs found! The code appears to be robust.");
         } else {
-          setAiOutput(''); // Clear text output, bug list will be shown instead
+          setAiOutput(''); 
         }
       } else if (selectedAction.id === 'tests') {
          const { testCode: generatedTestCode } = await generateTests(prompt);
@@ -259,8 +273,7 @@ const App: React.FC = () => {
         const fixedCodeSnippet = await getQuickFix(code, bug, language);
         
         const lines = code.split('\n');
-        // Replace the lines from bug.line to bug.endLine with the fix
-        const startLine = bug.line - 1; // 0-indexed
+        const startLine = bug.line - 1; 
         const endLine = bug.endLine - 1;
         const linesToRemove = endLine - startLine + 1;
         lines.splice(startLine, linesToRemove, fixedCodeSnippet);
@@ -268,7 +281,6 @@ const App: React.FC = () => {
 
         setCode(newCode);
 
-        // Immediately re-run analysis to update the bug list
         await runLiveBugAnalysis(newCode, language);
 
     } catch (e) {
@@ -300,7 +312,6 @@ const App: React.FC = () => {
         setBugReports([]);
 
         setAiOutput('AI has fixed the code. Now running it...');
-        // Use a timeout to allow React to re-render with the new code before running
         setTimeout(() => {
             handleRunCode();
         }, 100);
@@ -319,8 +330,8 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col font-sans bg-gray-900 text-gray-100">
-      <Header onLogout={handleLogout} />
+    <div className="h-screen flex flex-col font-sans bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <Header onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} />
       <main className="flex flex-1 overflow-hidden">
         <Sidebar 
           selectedActionId={selectedActionId}
@@ -329,8 +340,8 @@ const App: React.FC = () => {
           isLoading={isLoading || isGeneratingCode || isFixing || isExecuting}
           language={language}
         />
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-700">
-          <div className="flex flex-col h-full bg-gray-800">
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-300 dark:bg-gray-700">
+          <div className="flex flex-col h-full bg-white dark:bg-gray-800">
             <CodeEditor 
               value={code} 
               onChange={handleCodeChange} 
@@ -343,9 +354,10 @@ const App: React.FC = () => {
               isExecuting={isExecuting}
               language={language}
               onLanguageChange={handleLanguageChange}
+              theme={theme}
             />
           </div>
-          <div className="flex flex-col h-full bg-gray-900 overflow-hidden">
+          <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900 overflow-hidden">
             <Output 
               aiOutput={aiOutput}
               codeOutput={codeOutput}
@@ -366,4 +378,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default App; 

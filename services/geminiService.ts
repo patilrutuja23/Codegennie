@@ -4,7 +4,6 @@ import type { Bug, Language } from '../types';
 const API_KEY = process.env.API_KEY;
 
 if (!API_KEY) {
-  // This is a fallback for development; in production, the key should always be present.
   const errorDiv = document.createElement('div');
   errorDiv.style.cssText = 'position:fixed;top:0;left:0;width:100%;padding:10px;background:red;color:white;text-align:center;z-index:9999;';
   errorDiv.textContent = 'FATAL ERROR: API_KEY is not configured. The application cannot function.';
@@ -129,7 +128,6 @@ ${snippet}
 Corrected Code:`;
 
     const response = await runCodeAnalysis(prompt);
-    // Clean up potential markdown code blocks from the response
     return response.replace(new RegExp(`\`\`\`(${language})?\\n|\\n\`\`\`|\`\`\``, 'g'), '').trim();
 };
 
@@ -151,7 +149,6 @@ ${code}
 Corrected Code:`;
 
     const response = await runCodeAnalysis(prompt);
-    // Clean up potential markdown code blocks from the response
     return response.replace(new RegExp(`\`\`\`(${language})?\\n|\\n\`\`\`|\`\`\``, 'g'), '').trim();
 };
 

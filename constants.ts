@@ -81,82 +81,31 @@ export const ACTIONS: Action[] = [
 ];
 
 export const DEFAULT_CODES: Record<Language, string> = {
-  javascript: `function fibonacci(n) {
-  if (n < 0) {
-    // Let's introduce a bug for the bug-finder
-    return null
-  }
-  if (n <= 1) {
-    return n;
-  }
-  return fibonacci(n - 1) + fibonacci(n - 2);
-}
+  javascript: `console.log("Hello World!, Welcome to CodeGennie. Start your coding journey...");
 
-console.log(fibonacci(10));
 `,
-  python: `def fibonacci(n):
-    if n < 0:
-        # Bug: Should probably raise an error
-        return None
-    if n <= 1:
-        return n
-    else:
-        return fibonacci(n-1) + fibonacci(n-2)
+  python: `print("Hello World!, Welcome to CodeGennie. Start your coding journey...")
 
-# Example usage:
-print(fibonacci(10))
 `,
   java: `public class Main {
-    public static int fibonacci(int n) {
-        if (n < 0) {
-            // Bug: returning -1 for invalid input might be confusing.
-            return -1;
-        }
-        if (n <= 1) {
-            return n;
-        }
-        return fibonacci(n - 1) + fibonacci(n - 2);
-    }
-
     public static void main(String[] args) {
-        System.out.println(fibonacci(10));
+        System.out.println("Hello World!, Welcome to CodeGennie. Start your coding journey...");
     }
 }
+
 `,
   c: `#include <stdio.h>
 
-int fibonacci(int n) {
-    if (n < 0) {
-        return; // Bug: function with return type int should return a value
-    }
-    if (n == 0) {
-        return 0;
-    } else if (n == 1) {
-        return 1;
-    } else {
-        return fibonacci(n - 1) + fibonacci(n - 2);
-    }
-}
-
 int main() {
-    printf("%d\\n", fibonacci(10));
+    printf("Hello World!, Welcome to CodeGennie. Start your coding journey...\n");
     return 0;
 }
 `,
   cpp: `#include <iostream>
-
-int fibonacci(int n) {
-    if (n < 0) {
-        // Bug: No return value for a path. Should throw or return an error code.
-    }
-    if (n <= 1) {
-        return n;
-    }
-    return fibonacci(n - 1) + fibonacci(n - 2);
-}
+using namespace std;
 
 int main() {
-    std::cout << fibonacci(10) << std::endl;
+    cout << "Hello World!, Welcome to CodeGennie. Start your coding journey..." << endl;
     return 0;
 }
 `

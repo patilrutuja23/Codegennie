@@ -1,7 +1,7 @@
 import type { Action } from '../types';
 
 const OLLAMA_API_URL = 'http://localhost:11434/api/generate';
-const OLLAMA_MODEL = 'codellama:7b'; // Using a smaller model for better performance
+const OLLAMA_MODEL = 'codellama:7b'; 
 
 /**
  * Generates code from a comment prompt using a local Ollama instance.
@@ -9,7 +9,6 @@ const OLLAMA_MODEL = 'codellama:7b'; // Using a smaller model for better perform
  * @returns The generated code as a string.
  */
 export const generateCodeFromComment = async (commentPrompt: string): Promise<string> => {
-  // A specific prompt designed to make codellama return only raw code.
   const fullPrompt = `You are an expert code generation AI. Given the following comment, write the corresponding JavaScript code.
 Only output the raw code. Do not include any explanations, comments, or markdown formatting like \`\`\`javascript.
 
@@ -47,7 +46,6 @@ Code:`;
     if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
         throw new Error("Could not connect to Ollama. Please ensure it's running in Docker as per the README.md instructions.");
     }
-    // Re-throw other errors to be caught by the caller
     throw error;
   }
 };
@@ -95,6 +93,6 @@ ${codeContext}
     
   } catch (error) {
     console.error("Error calling Ollama for suggestions:", error);
-    return ''; // Fail silently for a better UX
+    return ''; 
   }
 };

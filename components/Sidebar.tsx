@@ -12,13 +12,13 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ onActionTrigger, selectedActionId, isLoading, onAutoFixAll, language }) => {
   return (
-    <aside className="w-64 bg-gray-800 p-4 flex flex-col">
+    <aside className="w-64 bg-gray-100 dark:bg-gray-800 p-4 flex flex-col">
       <div className="mb-6">
         <button
           onClick={onAutoFixAll}
           disabled={isLoading}
           title="Automatically fix all bugs and run the code"
-          className="w-full text-center px-4 py-2 rounded-md transition-colors duration-200 font-bold flex items-center justify-center bg-green-600 text-white hover:bg-green-700 disabled:bg-gray-600 disabled:opacity-75 disabled:cursor-not-allowed"
+          className="w-full text-center px-4 py-2 rounded-md transition-colors duration-200 font-bold flex items-center justify-center bg-green-600 text-white hover:bg-green-700 disabled:bg-gray-500 dark:disabled:bg-gray-600 disabled:opacity-75 disabled:cursor-not-allowed"
         >
            {isLoading ? (
               <div className="w-5 h-5 border-2 border-white border-t-transparent border-solid rounded-full animate-spin mr-3"></div>
@@ -32,7 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onActionTrigger, selectedActionId, is
         </button>
       </div>
 
-      <h2 className="text-lg font-semibold text-gray-300 border-b border-gray-600 pb-2 mb-4">Actions</h2>
+      <h2 className="text-lg font-semibold text-gray-600 dark:text-gray-300 border-b border-gray-300 dark:border-gray-600 pb-2 mb-4">Actions</h2>
       <div className="flex flex-col space-y-2 flex-grow">
         {ACTIONS.map((action) => {
           return (
@@ -44,8 +44,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onActionTrigger, selectedActionId, is
               className={`w-full text-left px-4 py-2 rounded-md transition-colors duration-200 text-sm font-medium flex items-center ${
                 selectedActionId === action.id
                   ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
-              } disabled:bg-gray-600 disabled:opacity-75 disabled:cursor-not-allowed`}
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600'
+              } disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:opacity-75 disabled:cursor-not-allowed`}
             >
               {isLoading && selectedActionId === action.id && (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent border-solid rounded-full animate-spin mr-3"></div>
