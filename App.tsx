@@ -214,7 +214,7 @@ const App: React.FC = () => {
     setError(null);
 
     try {
-      const generatedCode = await generateCodeFromComment(prompt, language);
+      const generatedCode = await generateCodeFromComment(prompt);
       
       setCode(currentCode => {
         const lines = currentCode.split('\n');

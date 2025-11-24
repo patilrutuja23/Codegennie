@@ -54,7 +54,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, markers, onRun
                  return;
               }
 
-              const suggestionText = await getCodeSuggestions(codeUntilCursor, currentLanguage);
+              const suggestionText = await getCodeSuggestions(codeUntilCursor);
               if (!suggestionText) {
                 resolve({ suggestions: [] });
                 return;
@@ -231,7 +231,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, markers, onRun
             automaticLayout: true,
             readOnly: isGeneratingCode,
             quickSuggestions: true,
-            lightbulb: { enabled: 'on' },
           }}
         />
       </div>
