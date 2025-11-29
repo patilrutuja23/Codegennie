@@ -1,8 +1,11 @@
 # Use CodeGennie
 https://codegennie.vercel.app/
 
-<video src="https://github.com/patilrutuja23/Codegennie/blob/main/Codegennie.mp4" width="600" controls>
-</video>
+<!-- <video src="https://github.com/patilrutuja23/Codegennie/blob/main/Codegennie.mp4" width="600" controls>
+</video> -->
+
+https://github.com/patilrutuja23/Codegennie/blob/main/Codegennie.mp4
+
 
 # CodeGennie with Ollama Code Generation
 
