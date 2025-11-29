@@ -1,3 +1,8 @@
+# Use CodeGennie
+https://codegennie.vercel.app/
+
+
+
 # CodeGennie with Ollama Code Generation
 
 This application allows you to explain, refactor, and analyze your code using the Gemini API. Additionally, it integrates with a local [Ollama](https://ollama.com/) instance to provide on-the-fly code generation from comments and AI-powered autocompletion/correction.
