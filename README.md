@@ -2,7 +2,7 @@
 https://codegennie.vercel.app/
 
 
-<video src="https://github.com/patilrutuja23/Codegennie/blob/main/Codegennie.mp4" width="600" controls>
+<video src="https://github.com/user-attachments/assets/c7a189d5-8aa2-4833-b06b-73cc87f9a226" width="600" controls>
 </video> 
 
 
