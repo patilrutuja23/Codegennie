@@ -1,33 +1,37 @@
-import { GoogleGenAI, Type } from "@google/genai";
 import type { Bug, Language } from '../types';
 
-const API_KEY = process.env.API_KEY;
+// Backend API endpoint - works in both development and production
+const API_BASE_URL = typeof window !== 'undefined' 
+  ? window.location.origin 
+  : 'http://localhost:3000';
 
-if (!API_KEY) {
-  const errorDiv = document.createElement('div');
-  errorDiv.style.cssText = 'position:fixed;top:0;left:0;width:100%;padding:10px;background:red;color:white;text-align:center;z-index:9999;';
-  errorDiv.textContent = 'FATAL ERROR: API_KEY is not configured. The application cannot function.';
-  document.body.appendChild(errorDiv);
-  console.error("API_KEY environment variable not set. Please set it to use the Gemini API.");
-}
+const callBackendAPI = async (action: string, prompt: string) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/analyze`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ action, prompt }),
+    });
 
-const ai = new GoogleGenAI({ apiKey: API_KEY! });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || `HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.result;
+  } catch (error) {
+    console.error(`Error calling backend API (${action}):`, error);
+    throw error;
+  }
+};
 
 export const runCodeAnalysis = async (prompt: string): Promise<string> => {
-  if (!API_KEY) {
-    return "Error: API_KEY environment variable not set. Cannot contact the AI service.";
-  }
-
   try {
-    const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-            temperature: 0.3,
-            topP: 0.9,
-        }
-    });
-    return response.text;
+    const result = await callBackendAPI('analyze', prompt);
+    return result;
   } catch (error) {
     console.error("Error calling Gemini API:", error);
     if (error instanceof Error) {
@@ -38,36 +42,9 @@ export const runCodeAnalysis = async (prompt: string): Promise<string> => {
 };
 
 export const findBugs = async (prompt: string): Promise<Bug[]> => {
-  if (!API_KEY) {
-    throw new Error("API_KEY environment variable not set.");
-  }
-
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              line: { type: Type.INTEGER },
-              column: { type: Type.INTEGER },
-              endLine: { type: Type.INTEGER },
-              endColumn: { type: Type.INTEGER },
-              message: { type: Type.STRING },
-              severity: { type: Type.STRING }
-            },
-            required: ['line', 'column', 'endLine', 'endColumn', 'message', 'severity']
-          }
-        }
-      }
-    });
-    
-    return JSON.parse(response.text) as Bug[];
-
+    const result = await callBackendAPI('findBugs', prompt);
+    return result as Bug[];
   } catch (error) {
     console.error("Error calling Gemini API for bug detection:", error);
     if (error instanceof Error) {
@@ -77,30 +54,10 @@ export const findBugs = async (prompt: string): Promise<Bug[]> => {
   }
 };
 
-
 export const generateTests = async (prompt: string): Promise<{ testCode: string }> => {
-  if (!API_KEY) {
-    throw new Error("API_KEY environment variable not set.");
-  }
-
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            testCode: { type: Type.STRING }
-          },
-          required: ['testCode']
-        }
-      }
-    });
-
-    return JSON.parse(response.text);
-    
+    const result = await callBackendAPI('generateTests', prompt);
+    return result;
   } catch (error) {
     console.error("Error calling Gemini API for test generation:", error);
     if (error instanceof Error) {
@@ -130,7 +87,6 @@ Corrected Code:`;
     const response = await runCodeAnalysis(prompt);
     return response.replace(new RegExp(`\`\`\`(${language})?\\n|\\n\`\`\`|\`\`\``, 'g'), '').trim();
 };
-
 
 export const fixAllBugs = async (code: string, bugs: Bug[], language: Language): Promise<string> => {
     const bugList = bugs.map(b => `- L${b.line}: ${b.message}`).join('\n');
@@ -163,19 +119,9 @@ Code:
 ${code}
 \`\`\``;
 
-  if (!API_KEY) {
-    return "Error: API_KEY environment variable not set. Cannot contact the AI service.";
-  }
-
   try {
-    const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-            temperature: 0.0,
-        }
-    });
-    return response.text;
+    const result = await callBackendAPI('runCode', prompt);
+    return result;
   } catch (error) {
     console.error("Error calling Gemini API for code execution:", error);
     if (error instanceof Error) {

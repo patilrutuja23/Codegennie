@@ -31,6 +31,24 @@ const Sidebar: React.FC<SidebarProps> = ({ onActionTrigger, selectedActionId, is
           Auto-Fix & Run
         </button>
       </div>
+      <div className="mb-6">
+        <button
+          onClick={onAutoFixAll}
+          disabled={isLoading}
+          title="Automatically fix all bugs and run the code"
+          className="w-full text-center px-4 py-2 rounded-md transition-colors duration-200 font-bold flex items-center justify-center bg-green-600 text-white hover:bg-green-700 disabled:bg-gray-500 dark:disabled:bg-gray-600 disabled:opacity-75 disabled:cursor-not-allowed"
+        >
+           {isLoading ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent border-solid rounded-full animate-spin mr-3"></div>
+            ) : (
+               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.428a1 1 0 00.475 0l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+               </svg>
+            )
+           }
+          Create Using Prompt
+        </button>
+      </div>
 
       <h2 className="text-lg font-semibold text-gray-600 dark:text-gray-300 border-b border-gray-300 dark:border-gray-600 pb-2 mb-4">Actions</h2>
       <div className="flex flex-col space-y-2 flex-grow">
